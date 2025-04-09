@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Share Your Event Photos 💕</title>
+  <style>
+    body {
+      background: #fff0f6;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #d63384;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+      text-align: center;
+    }
+
+    form {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input[type="file"] {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 2px dashed #f783ac;
+      background-color: #fff5f9;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #e64980;
+    }
+
+    #progressContainer {
+      width: 100%;
+      background-color: #f8d7e4;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 20px;
+      background-color: #ff69b4;
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    #progressText {
+      margin-top: 10px;
+      color: #d63384;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        width: 90%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📸 Upload Your Event Memories</h1>
+  <form id="uploadForm">
+    <input type="file" name="photo" id="fileInput" accept="image/*,video/*" required>
+    <button type="submit">Upload File</button>
+
+    <div id="progressContainer">
+      <div id="progressBar"></div>
+    </div>
+    <div id="progressText"></div>
+  </form>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "upload.php");
+
+      xhr.upload.addEventListener("progress", function (e) {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          progressContainer.style.display = "block";
+          progressBar.style.width = percent + "%";
+          progressText.textContent = `Uploading... ${percent}%`;
+        }
+      });
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          progressText.innerHTML = "✅ Upload complete!";
+          progressBar.style.backgroundColor = "#28a745";
+        } else {
+          progressText.textContent = "🚫 Upload failed. Please try again.";
+          progressBar.style.backgroundColor = "#dc3545";
+        }
+      };
+
+      xhr.send(formData);
+    });
+  </script>
+</body>
+</html>
