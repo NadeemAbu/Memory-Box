@@ -9,3 +9,5 @@ Create a .htaccess in the uploads folder if you want to keep the contents hidden
     Require all denied
 </IfModule>
  --->
+
+If you are looking for a qr code generator to make your link more accessible, you can use one of my other porjects for assistance. https://github.com/NadeemAbu/QR-Code-Generator
